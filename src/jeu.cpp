@@ -88,7 +88,7 @@ void jeu::deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonct
       }
     }
 
-    for (int z = select_tour_s.size(); z = 0; z--) // Permet d'avoir la dernier case vide
+    for (int z = 0; z < select_tour_s.size(); z++) // Permet d'avoir la dernier case vide
     {
       if (select_tour_s.at(z).getTaille() == 0)
       {
@@ -108,7 +108,7 @@ void jeu::deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonct
   }
   catch (const exception &e)
   {
-    cerr << "Error : Bad entry."<< endl;
+    cerr << "Error : Bad entry. "<< e.what() << endl;
     (this->*fonction_erreur)();
   }
 }
