@@ -22,6 +22,7 @@ public:
   void select_mode_jeu(int mode_jeu);
   void deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonction_erreur)());
   int check_win_jeu();
+  int check_deplacement_jeu(vector<disque> select_tour_e, vector<disque> select_tour_s, int result_e, int result_s);
 
   // Getter et setter
   vector<tour> getTab_tour();
@@ -66,6 +67,32 @@ void jeu::affiche_jeu()
   }
 }
 
+int jeu::check_deplacement_jeu(vector<disque> select_tour_e, vector<disque> select_tour_s, int result_e, int result_s)
+{
+  try
+  {
+    select_tour_s.at(result_s + 1);
+  }
+  catch (const std::exception &e)
+  {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    return 1;
+  }
+  try
+  {
+    if(select_tour_s.at(result_s + 1).getTaille() > select_tour_e.at(result_e).getTaille()){
+      return 1;
+    }
+  }
+  catch(const std::exception& e)
+  {
+    std::cerr << "Error : Bad entry." << '\n';
+  }
+  
+  return 0;
+}
+
 void jeu::deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonction_erreur)())
 {
 
@@ -92,7 +119,11 @@ void jeu::deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonct
         result_s = z;
       }
     }
-
+    int check_deplacement = check_deplacement_jeu(select_tour_e, select_tour_s, result_e, result_s);
+    if (check_deplacement == 0)
+    {
+      result_s = -1;
+    }
     select_tour_s.at(result_s).setTaille(select_tour_e.at(result_e).getTaille());
     select_tour_e.at(result_e).setTaille(0);
 
@@ -101,7 +132,7 @@ void jeu::deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonct
   }
   catch (const exception &e)
   {
-    cerr << "Error : Bad entry. " << e.what() << endl;
+    cerr << "Error : Bad entry." << endl;
     (this->*fonction_erreur)();
   }
 }
