@@ -1,5 +1,6 @@
 #include <vector>
 #include <sstream>
+#include <string>
 #include <limits>
 #include "tour.cpp"
 
@@ -18,11 +19,13 @@ public:
 
   // Methode
   void affiche_jeu();
-  void mode_manuel_jeu();
-  void select_mode_jeu(int mode_jeu);
+  void mode_automatique_jeu();
+  void select_mode_jeu();
   void deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonction_erreur)());
   int check_win_jeu();
   int check_deplacement_jeu(vector<disque> select_tour_e, vector<disque> select_tour_s, int result_e, int result_s);
+  void mode_manuel_jeu();
+  string get_moves(int num_discs, int src, int dst, int tmp);
 
   // Getter et setter
   vector<tour> getTab_tour();
@@ -81,15 +84,16 @@ int jeu::check_deplacement_jeu(vector<disque> select_tour_e, vector<disque> sele
   }
   try
   {
-    if(select_tour_s.at(result_s + 1).getTaille() > select_tour_e.at(result_e).getTaille()){
+    if (select_tour_s.at(result_s + 1).getTaille() > select_tour_e.at(result_e).getTaille())
+    {
       return 1;
     }
   }
-  catch(const std::exception& e)
+  catch (const std::exception &e)
   {
     std::cerr << "Error : Bad entry." << '\n';
   }
-  
+
   return 0;
 }
 
@@ -139,6 +143,7 @@ void jeu::deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonct
 
 void jeu::mode_manuel_jeu()
 {
+  affiche_jeu();
   do
   {
     int id_tour_e = 0;
@@ -168,9 +173,32 @@ void jeu::mode_manuel_jeu()
   cout << "YOU WIN !!!" << endl;
 }
 
-void jeu::select_mode_jeu(int mode_jeu)
+void jeu::select_mode_jeu()
 {
-  mode_manuel_jeu();
+  int mode_de_jeu;
+  cout << "Quel mode de jeu ? (0 = Manuel | 1 = Automatique)" << endl;
+  cin >> mode_de_jeu;
+  while (cin.fail())
+  {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << "Error : Bad entry." << endl;
+
+    cout << "Quel mode de jeu ? (0 = Manuel | 1 = Automatique)" << endl;
+    cin >> mode_de_jeu;
+  }
+
+  switch (mode_de_jeu)
+  {
+  case 0:
+    mode_manuel_jeu();
+    break;
+  case 1:
+    mode_automatique_jeu();
+    break;
+  default:
+    select_mode_jeu();
+  }
 }
 
 int jeu::check_win_jeu()
@@ -187,6 +215,42 @@ int jeu::check_win_jeu()
     }
   }
   return check;
+}
+
+void jeu::mode_automatique_jeu()
+{
+  vector<int> soso;
+  string solution_string = get_moves(this->taille_tour, 1, 3, 2);
+
+  for (int i = 0; i < solution_string.size(); i++)
+  {
+    int result = (int)solution_string[i] - 48;
+    soso.push_back(result);
+  }
+
+  affiche_jeu();
+
+  for (int i = 0; i < soso.size(); i++)
+  {
+    cout << "PRESS ENTER : "<< endl;
+    deplacement_disque_jeu(soso.at(i), soso.at(i + 1), &jeu::mode_automatique_jeu);
+    i++;
+    affiche_jeu();
+  }
+}
+
+string jeu::get_moves(int num_discs, int src, int dst, int tmp)
+{
+  if (num_discs == 0)
+  {
+    return "";
+  }
+  string step_before = get_moves(num_discs - 1, src, tmp, dst);
+  // the print statement
+  string step = to_string(src) + to_string(dst);
+  string step_after = get_moves(num_discs - 1, tmp, dst, src);
+
+  return step_before + step + step_after;
 }
 
 // Getter
