@@ -1,13 +1,11 @@
 #include <iostream>
-#include "tour.cpp"
+#include "jeu.cpp"
 
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
-  Tour *test_2 = new Tour(0,0);
-  Tour test(90,0);
-  cout <<"test : "<< test.getNb_disque() << endl;
-
-  return 0;
+    jeu jeu(3,10);
+    jeu.affiche_jeu();
+    return 0;
 }

@@ -1,27 +1,25 @@
-#include "disque.hpp"
-
-Disque::Disque(int valeur, int position)
+class disque
 {
-    this->valeur = valeur;
+private:
+    int taille;
+    int position;
+
+public:
+    disque(int taille, int position);
+    int getTaille();
+    int getPosition();
+};
+
+disque::disque(int taille, int position)
+{
+    this->taille = taille;
     this->position = position;
 }
 
-int Disque::getValeur()//disque devant le getValeur permet de faire le lien avec la classe disque
-{
-    return this->valeur;
+int disque::getTaille(){
+    return this->taille;
 }
 
-void Disque::setValeur(int valeur)
-{
-    this->valeur = valeur;
-}
-
-int Disque::getPosition()
-{
+int disque::getPosition(){
     return this->position;
-}
-
-void Disque::setPosition(int position)
-{
-    this->position = position;
 }

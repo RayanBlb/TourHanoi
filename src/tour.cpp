@@ -1,27 +1,34 @@
-#include "tour.hpp"
+#include <vector>
+#include "disque.cpp"
 
-Tour::Tour(int nb_disque, int position)
+using namespace std;
+
+class tour
 {
-    this->nb_disque = nb_disque;
+private:
+    int taille_tour;
+    vector<disque> tab_disque;
+    int position;
+public:
+    tour(int taille_tour, int position);
+
+    vector<disque> getTab_disque();
+};
+
+tour::tour(int taille_tour, int position)
+{
+    this->taille_tour = taille_tour;
+
+    for (int i = 1; i <= taille_tour; i++)
+    {
+        disque disque(i,i);
+        tab_disque.push_back(disque);
+    }
+
     this->position = position;
 }
 
-int Tour::getNb_disque()
-{
-    return nb_disque;
+vector<disque> tour::getTab_disque(){
+    return this->tab_disque;
 }
 
-void Tour::setNb_disque(int nb_disque)
-{
-    this->nb_disque = nb_disque;
-}
-
-int Tour::getPosition()
-{
-    return position;
-}
-
-void Tour::setPosition(int position)
-{
-    this->position = position;
-}
