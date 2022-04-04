@@ -1,3 +1,14 @@
+/**
+ * @file jeu.hpp
+ * @author Rayan
+ * @brief Projet Tour de Hanoi
+ * @version 1.0
+ * @date 2022-04-04
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #ifndef JEU_HPP
 #define JEU_HPP
 
