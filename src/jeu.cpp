@@ -21,11 +21,11 @@ public:
   void affiche_jeu();
   void mode_automatique_jeu();
   void select_mode_jeu();
-  void deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonction_erreur)());
+  int deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonction_erreur)());
   int check_win_jeu();
   int check_deplacement_jeu(vector<disque> select_tour_e, vector<disque> select_tour_s, int result_e, int result_s);
   void mode_manuel_jeu();
-  string get_moves(int num_discs, int src, int dst, int tmp);
+  string honoi_solution_jeu(int nb_disque, int tour_e, int tour_s, int tour_tempo);
 
   // Getter et setter
   vector<tour> getTab_tour();
@@ -82,22 +82,16 @@ int jeu::check_deplacement_jeu(vector<disque> select_tour_e, vector<disque> sele
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     return 1;
   }
-  try
+
+  if (select_tour_s.at(result_s + 1).getTaille() > select_tour_e.at(result_e).getTaille())
   {
-    if (select_tour_s.at(result_s + 1).getTaille() > select_tour_e.at(result_e).getTaille())
-    {
-      return 1;
-    }
-  }
-  catch (const std::exception &e)
-  {
-    std::cerr << "Error : Bad entry." << '\n';
+    return 1;
   }
 
   return 0;
 }
 
-void jeu::deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonction_erreur)())
+int jeu::deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonction_erreur)())
 {
 
   int result_e = 0;
@@ -123,11 +117,17 @@ void jeu::deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonct
         result_s = z;
       }
     }
-    int check_deplacement = check_deplacement_jeu(select_tour_e, select_tour_s, result_e, result_s);
-    if (check_deplacement == 0)
+
+    if (result_s == -1)
     {
-      result_s = -1;
+      return -2;
     }
+
+    if (check_deplacement_jeu(select_tour_e, select_tour_s, result_e, result_s) == 0)
+    {
+      return -1;
+    }
+
     select_tour_s.at(result_s).setTaille(select_tour_e.at(result_e).getTaille());
     select_tour_e.at(result_e).setTaille(0);
 
@@ -136,9 +136,10 @@ void jeu::deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonct
   }
   catch (const exception &e)
   {
-    cerr << "Error : Bad entry." << endl;
+    cerr << "Erreur : Veuillez entrer un chiffre entre 1 et 3." << endl;
     (this->*fonction_erreur)();
   }
+  return 0;
 }
 
 void jeu::mode_manuel_jeu()
@@ -148,27 +149,40 @@ void jeu::mode_manuel_jeu()
   {
     int id_tour_e = 0;
     int id_tour_s = 0;
+    int coup_joueur = 0;
 
-    cout << "Quel tour ?" << endl;
+    cout << "Selectionne la premiere tour : " << endl;
     cin >> id_tour_e;
 
-    cout << "Ou tour ?" << endl;
+    cout << "Selectionne la deuxieme tour : " << endl;
     cin >> id_tour_s;
 
     while (cin.fail())
     {
       cin.clear();
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
-      cout << "Error : Bad entry." << endl;
+      cerr << "Erreur : Veuillez entrer un chiffre entre 1 et 3." << endl;
 
-      cout << "Quel tour ?" << endl;
+      cout << "Selectionne la premiere tour : " << endl;
       cin >> id_tour_e;
 
-      cout << "Ou tour ?" << endl;
+      cout << "Selectionne la deuxieme tour : " << endl;
       cin >> id_tour_s;
     }
-    deplacement_disque_jeu(id_tour_e, id_tour_s, &jeu::mode_manuel_jeu);
+
+    coup_joueur = deplacement_disque_jeu(id_tour_e, id_tour_s, &jeu::mode_manuel_jeu);
+
+    if (coup_joueur == -1)
+    {
+      cerr << "Erreur : mauvaise emplacement un disque plus grand ne peut pas se superposer a un disque plus petit." << endl;
+    }
+    else if (coup_joueur == -2)
+    {
+      cerr << "Erreur : Le disque est plein" << endl;
+    }
+
     affiche_jeu();
+
   } while (check_win_jeu() == 0);
   cout << "YOU WIN !!!" << endl;
 }
@@ -182,7 +196,7 @@ void jeu::select_mode_jeu()
   {
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cout << "Error : Bad entry." << endl;
+    cerr << "Erreur : Veuillez entrer un chiffre entre 0 et 1." << endl;
 
     cout << "Quel mode de jeu ? (0 = Manuel | 1 = Automatique)" << endl;
     cin >> mode_de_jeu;
@@ -197,6 +211,8 @@ void jeu::select_mode_jeu()
     mode_automatique_jeu();
     break;
   default:
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     select_mode_jeu();
   }
 }
@@ -219,38 +235,37 @@ int jeu::check_win_jeu()
 
 void jeu::mode_automatique_jeu()
 {
-  vector<int> soso;
-  string solution_string = get_moves(this->taille_tour, 1, 3, 2);
+  vector<int> solution_vect;
+  string solution_string = honoi_solution_jeu(this->taille_tour, 1, 3, 2);
 
   for (int i = 0; i < solution_string.size(); i++)
   {
     int result = (int)solution_string[i] - 48;
-    soso.push_back(result);
+    solution_vect.push_back(result);
   }
 
-  affiche_jeu();
-
-  for (int i = 0; i < soso.size(); i++)
+  for (int i = 0; i < solution_vect.size(); i++)
   {
-    cout << "PRESS ENTER : "<< endl;
-    deplacement_disque_jeu(soso.at(i), soso.at(i + 1), &jeu::mode_automatique_jeu);
+    cout << "APPUYEZ SUR ENTREE  : " << endl;
+    deplacement_disque_jeu(solution_vect.at(i), solution_vect.at(i + 1), &jeu::mode_automatique_jeu);
     i++;
     affiche_jeu();
+    cout << " " << endl;
   }
+  cout << "Fin de la resolution !!!" << endl;
 }
 
-string jeu::get_moves(int num_discs, int src, int dst, int tmp)
+string jeu::honoi_solution_jeu(int nb_disque, int tour_e, int tour_s, int tour_tempo)
 {
-  if (num_discs == 0)
+  if (nb_disque == 0)
   {
     return "";
   }
-  string step_before = get_moves(num_discs - 1, src, tmp, dst);
-  // the print statement
-  string step = to_string(src) + to_string(dst);
-  string step_after = get_moves(num_discs - 1, tmp, dst, src);
+  string etape_avant = honoi_solution_jeu(nb_disque - 1, tour_e, tour_tempo, tour_s);
+  string etape = to_string(tour_e) + to_string(tour_s);
+  string etape_apres = honoi_solution_jeu(nb_disque - 1, tour_tempo, tour_s, tour_e);
 
-  return step_before + step + step_after;
+  return etape_avant + etape + etape_apres;
 }
 
 // Getter
