@@ -1,5 +1,7 @@
 #include <iostream>
-#include "jeu.cpp"
+#include <limits>
+
+#include "jeu.hpp"
 
 using namespace std;
 

@@ -1,32 +1,6 @@
-#include <vector>
-#include "disque.cpp"
+#include "tour.hpp"
 
 using namespace std;
-
-class tour
-{
-private:
-    int taille_tour;
-    vector<disque> tab_disque;
-    int position;
-
-public:
-    // Constructeur
-    tour(int taille_tour, int position);
-
-    // Methode
-    vector<string> affiche_tour();
-    void remplissage_tour();
-
-    // Getter
-    int getTaille_tour();
-    vector<disque> getTab_disque();
-    int getPosition();
-
-    void setTaille_tour(int taille_tour);
-    void setTab_disque(vector<disque> tab_disque);
-    void setPosition(int position);
-};
 
 // Constructeur
 tour::tour(int taille_tour, int position)
