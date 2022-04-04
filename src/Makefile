@@ -4,13 +4,13 @@ output: main.o jeu.o tour.o disque.o
 main.o: main.cpp
 	g++ -c main.cpp
 
-main.o: jeu.cpp
+jeu.o: jeu.cpp jeu.hpp
 	g++ -c jeu.cpp
 
-main.o: tour.cpp
+tour.o: tour.cpp tour.hpp
 	g++ -c tour.cpp
 
-main.o: disque.cpp
+disque.o: disque.cpp disque.hpp
 	g++ -c disque.cpp
 
 clean: 
