@@ -46,7 +46,7 @@ jeu::jeu(int nb_tour, int taille_tour)
 void jeu::affiche_jeu()
 {
   vector<tour> tour_tab = this->tab_tour;
-  vector<vector<string>> tableau_de_tour;
+  vector<vector<string> > tableau_de_tour;
 
   for (int i = 0; i < tour_tab.size(); i++)
   {
@@ -95,10 +95,10 @@ int jeu::check_deplacement_jeu(vector<disque> select_tour_e, vector<disque> sele
 
 /**
  * @brief Methode deplacement_disque_jeu(int id_tour_e, int id_tour_s, void (jeu::*fonction_erreur)()) qui permet de déplacer des disques entres les tours.
- * @details La methode prend en entrer la tour d'ou il faut prendre la disque, la tour ou va normalement atterrir le disque, ainsi qu'une fonction d'erreur qui sera jouer en cas d'erreur du try.
- * la fonction va donc récuperer le disque de la tour id_tour_e qui correspond a la tour de départ, puis ensuite va ensuite récuperer la position de la prochaine case vide de la tour d'arriver
- * va ensuite check si il y a de la place sur la tour d'arriver (si pas de place return -2), puis ensuite va check si le disque du dessous de la tour d'arriver est plus grand que le disque a poser.
- * Si le déplacement est possible alors il y a déplacement. 
+ * @details La methode prend en entrer la tour de départ, la tour de destination, ainsi qu'une fonction d'erreur qui sera jouer en cas d'erreur du try.
+ * la fonction va donc récuperer le disque de la tour id_tour_e qui correspond a la tour de départ, puis ensuite va récuperer la position de la prochaine case vide de la tour d'arriver.
+ * Va check si il y a de la place sur la tour d'arriver (si pas de place return -2), puis ensuite va check si le disque du dessous de la tour d'arriver est plus grand que le disque a poser.
+ * Si le déplacement est possible alors il y a déplacement sinon return de -1. 
  * @param[in] id_tour_e
  * @param[in] id_tour_s 
  * @param[in] void (jeu::*fonction_erreur)()
@@ -207,7 +207,7 @@ void jeu::mode_manuel_jeu()
 
 /**
  * @brief Methode select_mode_jeu(), affiche le menu de selection de mode.
- * @details Permet d'afficher le menu de selection de mode, choix entre le mode manuel ou automatique
+ * @details Permet d'afficher le menu de selection de mode, choix entre le mode manuel ou automatique.
  * @param[in] taille 
  * @param[in] position 
  */
@@ -243,7 +243,7 @@ void jeu::select_mode_jeu()
 
 /**
  * @brief Methode check_win_jeu(), permet de savoir si le joueur a gagner la partie
- * @details La methode viens checker si la dernier tour du jeu est remplie de manière a avoir les disque de 1 a x avec x le dernier disque.
+ * @details La methode viens checker si la dernier tour du jeu est remplie de manière a avoir les disque empiler de 1 a x avec x le dernier disque.
  * la fonction retour un check, si check = 0 alors le joueur a gagner.
  * @return int check qui vaut 0 ou 1
  */
@@ -290,7 +290,7 @@ void jeu::mode_automatique_jeu()
   cout << "Fin de la resolution !!!" << endl;
 }
 /**
- * @brief La honoi_solution_jeu(, permet de résoudre le jeu des tours de hanoi.
+ * @brief La methode honoi_solution_jeu(), permet de résoudre le jeu des tours de hanoi.
  * @details Retourne un string des déplacements à réaliser afin de résoudre le jeu.
  * @param[in] nb_disque corresponds au nombre de disque des tours
  * @param[in] tour_e tour de départ

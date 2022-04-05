@@ -16,7 +16,7 @@
 using namespace std;
 
 /**
- * @brief Fonction affiche_menu(), permet d'afficher le menu de départ afin de selection le nombre de disque dans le jeu
+ * @brief Fonction affiche_menu(), permet d'afficher le menu de départ afin de selection le nombre de disque dans le jeu.
  * @details Demande a l'utilisateur d'entrer le nombre de disque qu'il souhaite entre 1 et 9.
  * @return le nombre de disque en int
  */
